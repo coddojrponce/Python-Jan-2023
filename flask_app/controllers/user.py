@@ -25,12 +25,13 @@ def submit():
         pw_hash = bcrypt.generate_password_hash(request.form["password"])
         print("**************** This is the hash **** ")
         data={
-            "f_name":request.form["f_name"].lower(),
-            "l_name":request.form["l_name"].lower(),
+            "first_name":request.form["first_name"].lower(),
+            "last_name":request.form["last_name"].lower(),
             "email":request.form["email"].lower(),
             "password": pw_hash
         }
 
+        
     
         user_id = User.save(data)
         print(f"This is the user id: {user_id}")
@@ -70,8 +71,8 @@ def userView(id):
 def update(id):
     data={
             "id":id,
-            "f_name":request.form["f_name"].lower(),
-            "l_name":request.form["l_name"].lower(),
+            "first_name":request.form["first_name"].lower(),
+            "last_name":request.form["last_name"].lower(),
             "email":request.form["email"].lower(),
             "password":request.form["password"]
     }
@@ -89,4 +90,3 @@ def destroy(id):
 def logout():
     session.clear()
     return redirect("/")
-

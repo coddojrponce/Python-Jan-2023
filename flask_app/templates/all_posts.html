@@ -8,26 +8,28 @@
   </head>
   <body>
     <h1>Posts</h1>
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Image</th>
                 <th>Comment</th>
                 <th>Actions</th>
+                <!-- <th>Owner</th> -->
             </tr>
         </thead>
         <tbody>
             {% for post in posts %}
             <tr>
                 <td class="p-4">{{post.id}}</td>
-                <td><img class="thumb rounded  w-25" src="{{post.image}}" alt=""/></td>
-                <td>{{post.comment}}</td>
+                <td><a href="/posts/{{post.id}}"><img class="thumb rounded  w-25" src="{{post.image}}" alt=""/></a></td>
+                <td class="p-4">{{post.comment}}</td>
                 <td>
                     <form action="/like/{{post.id}}" method="POST">
                         <button class="btn btn-success" type="submit">{{post.likes | length}} Like</button>
                     </form>
                 </td>
+                <!-- <td class="p-4">{{post.owner.first_name}} {{post.owner.last_name}}</td> -->
             </tr>
             {% endfor%}
 

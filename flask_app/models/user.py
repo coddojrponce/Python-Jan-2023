@@ -10,13 +10,14 @@ class User:
 
     def __init__(self,data):
         self.id=data['id']
-        self.f_name=data['f_name']
-        self.l_name=data['l_name']
+        self.first_name=data['first_name']
+        self.last_name=data['last_name']
         self.email=data['email']
         self.password=data['password']
         self.created_at=data['created_at']
         self.updated_at=data['updated_at']
         self.posts=[]
+        self.likes=[]
 
     @classmethod
     def getAll(cls):
@@ -32,7 +33,7 @@ class User:
         return all_users
     @classmethod
     def save(cls,data):
-        query ="INSERT INTO users(f_name,l_name,email,password) VALUES(%(f_name)s,%(l_name)s,%(email)s,%(password)s);"
+        query ="INSERT INTO users(first_name,last_name,email,password) VALUES(%(first_name)s,%(last_name)s,%(email)s,%(password)s);"
         result = connectToMySQL(cls.db).query_db(query,data)
         return result
     
@@ -45,29 +46,36 @@ class User:
         return False
 
     @classmethod
-    def getOne(cls,data):
+    def get_one(cls,data):
         query="SELECT * FROM users LEFT JOIN posts ON users.id = posts.user_id WHERE users.id = %(id)s"
         results = connectToMySQL(cls.db).query_db(query,data)
         print(results)
         if results:
             this_user = cls(results[0])
-            print("This is the results")
-            print(results)
-            print("this is the results[0]")
-            print(results[0])
+            # print("This is the results")
+            # print(results)
+            # print("this is the results[0]")
+            # print(results[0])
             for row in results:
-                # print("KEYKEYKEYKEYKEYKEYEYKEY")
-                # for key in row.keys():
-                #     print(key)
+                print("KEYKEYKEYKEYKEYKEYEYKEY")
+                for key in row.keys():
+                    print(key)
                 if row['user_id'] == None:
                     break
-                this_user.posts.append(post.Post(row))
+                data={
+                    "id":row["posts.id"],
+                    "image":row["image"],
+                    "comment":row["comment"],
+                    "created_at":row["posts.created_at"],
+                    "updated_at":row["posts.updated_at"]
+                }
+                this_user.posts.append(post.Post(data))
             return this_user
         return False
 
     @classmethod
     def update(cls,data):
-        query="UPDATE users SET f_name=%(f_name)s, l_name=%(l_name)s, email=%(email)s,password=%(password)s WHERE id = %(id)s;"
+        query="UPDATE users SET first_name=%(first_name)s, last_name=%(last_name)s, email=%(email)s,password=%(password)s WHERE id = %(id)s;"
         result = connectToMySQL(cls.db).query_db(query,data)
         return result
 
@@ -80,10 +88,10 @@ class User:
     @staticmethod
     def validate_user(data):
         is_valid = True
-        if len(data['f_name'] ) < 3:
+        if len(data['first_name'] ) < 3:
             flash("First Name must be at least 3 characters.")
             is_valid = False
-        if len(data['l_name'] ) < 3:
+        if len(data['last_name'] ) < 3:
             flash("Last Name must be at least 3 characters.")
             is_valid = False
         if not EMAIL_REGEX.match(data['email'] ):
